@@ -78,11 +78,39 @@ int main(){
     header->ptrProximoElemento = NULL;
     header->elemento = 0;
     header->posicao = 0;
-    __uint8_t flag = -1;
+    int flag = -1;
+    int opcao;
+    int quantidadeDeElementosDesejados;
 
+    while(flag == -1){
+        printf("O QUE DESEJA FAZER?\n");
+        printf(" ________________________________________________________________\n");
+        printf(" | PREENCHER LISTA(1) |  EXIBIR ELEMENTOS(2) | LIMPAR LISTA(3)  |\n");
+        printf(" ________________________________________________________________\n");
+        scanf(" %d", &opcao);
 
-    preencherLista(header, 5);
-    percorrerLista(header);
-    limparLista(header);
+        switch (opcao)
+        {
+            case 1:
+                printf("QUANTOS ELEMENTOS VOCÊ QUER NA LISTA?");
+                scanf(" %d", &quantidadeDeElementosDesejados);
+                preencherLista(header, quantidadeDeElementosDesejados);
+                printf("\nELEMENTOS CRIADOS\n______________________________________\n\n");
+                break;
+            case 2:
+                percorrerLista(header);
+                printf("\n\n______________________________________\n");
+                break;
+            case 3:
+                limparLista(header);
+                printf("\n______________________________________");
+                break;
+        }
+
+        printf("DESEJA FAZER MAIS ALGUMA OPERAÇÃO?");
+        scanf(" %d", &flag);
+        
+    }
+   
     return 0;
 }
