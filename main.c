@@ -1,116 +1,131 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Lista
+typedef struct Node
 {
     int elemento;
-    __uint8_t posicao;
-    struct Lista *ptrProximoElemento;
-}   Lista;
+    int posicao;
+    struct Node *ptrProximoElemento;
+}   Node;
 
 
-Lista *criarNovoElemento(Lista *ultimoNodeAtual, int elemento){
+Node *criarNovoNode(Node *ultimoNodeAtual, __uint8_t elemento){
     
-    ultimoNodeAtual->ptrProximoElemento = (Lista *)malloc(sizeof(Lista));
+    ultimoNodeAtual->ptrProximoElemento = (Node *)malloc(sizeof(Node));
+    __uint8_t posicaoNovoNode = ultimoNodeAtual->posicao;
+    posicaoNovoNode++;
     ultimoNodeAtual->ptrProximoElemento->elemento = elemento;
-    ultimoNodeAtual->ptrProximoElemento->posicao = ultimoNodeAtual->posicao++;
+    ultimoNodeAtual->ptrProximoElemento->posicao = posicaoNovoNode;
     ultimoNodeAtual->ptrProximoElemento->ptrProximoElemento = NULL;    
 
     return ultimoNodeAtual->ptrProximoElemento;
 }
 
-void percorrerLista(Lista *primeiroNode){
+void percorrerLista(Node *primeiroNode){
 
       if(primeiroNode->ptrProximoElemento == NULL){
         printf("A lista está vazia!");
         return;
     }
 
-    Lista *ptr = primeiroNode->ptrProximoElemento;
+    Node *ptr = primeiroNode->ptrProximoElemento;
 
     printf("Elementos na lista:");
     while(ptr != NULL){
-        printf("| %d | ", ptr->elemento);
+        printf("| %u | ", ptr->elemento);
         ptr = ptr->ptrProximoElemento;
     }
 }
 
-void limparLista(Lista *lista){
-    Lista *ptr = lista->ptrProximoElemento;
+void destruirLista(Node *head){       
+    Node *temp;
+    Node *nodeAtual;
+    temp = head;
 
-    while(ptr != NULL){
-        Lista *next = ptr->ptrProximoElemento;
-        free(ptr);
-        ptr = next;
+    while(temp != NULL){
+        nodeAtual = temp->ptrProximoElemento;
+        free(temp);
+        temp = nodeAtual;
     }
-
-    free(lista);
+    head = NULL;
 }
 
-Lista *encontrarElemento(Lista *lista, int elementoProcurado){
+void removerNode(Node *head, int posicao){
 
-    Lista *nodeEncontrado;
+    
+}
 
-    while(lista->ptrProximoElemento != NULL){
-        if(lista->elemento == elementoProcurado){
-            return lista;   
+Node *encontrarElemento(Node *lista, int elementoProcurado){
+
+    Node *nodeAtual = lista->ptrProximoElemento;
+
+    while(nodeAtual != NULL){   
+        if(nodeAtual->elemento == elementoProcurado){
+            return nodeAtual;   
         }
+        nodeAtual = nodeAtual->ptrProximoElemento;
     }
     return NULL;
 }
-void preencherLista(Lista *header, __uint8_t quantidadeDesejada){
-   
-    int numero = 0;
-    Lista *novoNode;
-    Lista *ultimoNode = header;
-
-    for(__uint8_t i = 0; i < quantidadeDesejada; i++){
-        printf("Digite um numero:");
-        scanf(" %d", &numero);
-        novoNode = criarNovoElemento(ultimoNode, numero);
-        ultimoNode = novoNode;
-
-    }
-}
 
 int main(){
-    Lista *header = (Lista *)malloc(sizeof(Lista));
-    header->ptrProximoElemento = NULL;
-    header->elemento = 0;
-    header->posicao = 0;
+
+    Node *HEAD = (Node *)malloc(sizeof(Node));
+    Node *ultimoNode = HEAD;
+    Node *novoNode;
+    Node *nodeEncontrado;
     int flag = -1;
-    int opcao;
-    int quantidadeDeElementosDesejados;
+    int opcao = 0;
+    int elemento;
+    int elementoParaEncontrar;
+
+    HEAD->ptrProximoElemento = NULL;
+    HEAD->elemento = 0;
+    HEAD->posicao = 0;
 
     while(flag == -1){
+        system("clear");
         printf("O QUE DESEJA FAZER?\n");
-        printf(" ________________________________________________________________\n");
-        printf(" | PREENCHER LISTA(1) |  EXIBIR ELEMENTOS(2) | LIMPAR LISTA(3)  |\n");
-        printf(" ________________________________________________________________\n");
+        printf(" ______________________________________________________________________________\n");
+        printf(" | CRIAR NODE(1) |  EXIBIR ELEMENTOS(2) | ENCONTRAR ELEMENTO(3) | REMOVER NODE(4) |\n");
+        printf(" ______________________________________________________________________________\n");
         scanf(" %d", &opcao);
 
         switch (opcao)
         {
             case 1:
-                printf("QUANTOS ELEMENTOS VOCÊ QUER NA LISTA?");
-                scanf(" %d", &quantidadeDeElementosDesejados);
-                preencherLista(header, quantidadeDeElementosDesejados);
-                printf("\nELEMENTOS CRIADOS\n______________________________________\n\n");
+                printf("DIGITE O ELEMENTO:");
+                scanf(" %d", &elemento);
+                novoNode = criarNovoNode(ultimoNode, elemento);
+                ultimoNode = novoNode;
+                printf("\nNODE CRIADO\n______________________________________\n\n");
+                
                 break;
             case 2:
-                percorrerLista(header);
-                printf("\n\n______________________________________\n");
+                percorrerLista(HEAD);
+                printf("\n______________________________________\n\n");
                 break;
             case 3:
-                limparLista(header);
-                printf("\n______________________________________");
+
+                printf("Qual elemento deseja encontrar?");
+                scanf("%d", &elementoParaEncontrar);
+                nodeEncontrado = encontrarElemento(HEAD, elementoParaEncontrar);
+                if(nodeEncontrado == NULL){
+                    printf("Elemento não encontrado!\n"); break;
+                }
+                printf("Elemento encontrado! Ele está na posição [%d] da lista\n", nodeEncontrado->posicao);
+                printf("\n______________________________________\n\n");
                 break;
+                
+            case 4:
+
+            break;
         }
 
         printf("DESEJA FAZER MAIS ALGUMA OPERAÇÃO?");
         scanf(" %d", &flag);
         
     }
-   
+    destruirLista(HEAD);
     return 0;
 }
