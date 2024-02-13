@@ -38,8 +38,10 @@ void percorrerLista(Node *primeiroNode){
 }
 
 void destruirLista(Node *head){       
+
     Node *temp;
     Node *nodeAtual;
+
     temp = head;
 
     while(temp != NULL){
@@ -50,10 +52,6 @@ void destruirLista(Node *head){
     head = NULL;
 }
 
-void removerNode(Node *head, int posicao){
-
-    
-}
 
 Node *encontrarElemento(Node *lista, int elementoProcurado){
 
@@ -68,6 +66,16 @@ Node *encontrarElemento(Node *lista, int elementoProcurado){
     return NULL;
 }
 
+
+void removerNode(Node *p){
+
+    Node *lixo;
+    lixo = p->ptrProximoElemento;
+    p->ptrProximoElemento = lixo->ptrProximoElemento;
+    free(lixo);
+}
+
+
 int main(){
 
     Node *HEAD = (Node *)malloc(sizeof(Node));
@@ -78,6 +86,8 @@ int main(){
     int opcao = 0;
     int elemento;
     int elementoParaEncontrar;
+    Node *(*func_ptr)(Node*, int);
+    func_ptr = &encontrarElemento;
 
     HEAD->ptrProximoElemento = NULL;
     HEAD->elemento = 0;
@@ -86,9 +96,9 @@ int main(){
     while(flag == -1){
         system("clear");
         printf("O QUE DESEJA FAZER?\n");
-        printf(" ______________________________________________________________________________\n");
+        printf(" ________________________________________________________________________________\n");
         printf(" | CRIAR NODE(1) |  EXIBIR ELEMENTOS(2) | ENCONTRAR ELEMENTO(3) | REMOVER NODE(4) |\n");
-        printf(" ______________________________________________________________________________\n");
+        printf(" ________________________________________________________________________________\n");
         scanf(" %d", &opcao);
 
         switch (opcao)
@@ -118,7 +128,10 @@ int main(){
                 break;
                 
             case 4:
-
+                printf("Escolha um dos elementos para passar seu endereço:\n");
+                percorrerLista(HEAD);
+                scanf(" %d", &elemento);
+                removerNode(func_ptr(HEAD, elemento));
             break;
         }
 
